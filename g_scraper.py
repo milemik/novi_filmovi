@@ -11,6 +11,8 @@ class Scraper():
 
 
     def __init__(self, num):
+        self.test_num = 0
+        self.data=[]
         self.row = 0
         self.workbook = xlsxwriter.Workbook("gledalica_filmovi.xlsx")
         self.worksheet = self.workbook.add_worksheet()
@@ -43,13 +45,22 @@ class Scraper():
                 title = movie.select("span.song_name")[0].text
                 link = movie.select("a")[0]["href"]
                 img = movie.select("img")[0]["src"]
-                self.worksheet.write(self.row, col, title)
-                self.worksheet.write(self.row, col+1, img)
-                self.worksheet.write(self.row, col+2, link)
-                self.row += 1
+                info = [title, link, img]
+                self.data.append(info)
             return True
         else:
             return False
+
+    def create_excel(self):
+        print(self.data)
+        for i in self.data:
+            print(i)
+            col = 0
+            title, img, link = i
+            self.worksheet.write(self.row, col, title)
+            self.worksheet.write(self.row, col+1, img)
+            self.worksheet.write(self.row, col+2, link)
+            self.row += 1
 
     def close_excel(self):
         self.workbook.close()
@@ -66,6 +77,11 @@ def main():
         if stat == False:
             break
         num += 1
+        '''
+        if num > 5:
+            break
+        '''
+    s.create_excel()
     s.close_excel()
     s.close_driver()
     print("FINISHED")
